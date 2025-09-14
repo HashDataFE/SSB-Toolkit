@@ -1,0 +1,2 @@
+DROP SCHEMA IF EXISTS ssb_reports CASCADE;
+CREATE SCHEMA ssb_reports;

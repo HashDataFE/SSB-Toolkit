@@ -1,0 +1,6 @@
+1|customer|c_custkey
+2|lineorder|lo_orderkey
+3|part|p_partkey
+4|supplier|s_suppkey
+5|date|d_datekey
+6|lineorder_flat|lo_orderkey

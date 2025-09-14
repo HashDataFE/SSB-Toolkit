@@ -1,0 +1,2 @@
+DROP SCHEMA IF EXISTS ssb_testing CASCADE;
+CREATE SCHEMA ssb_testing;
