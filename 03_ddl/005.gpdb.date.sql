@@ -1,4 +1,4 @@
-CREATE TABLE :DB_SCHEMA_NAME.dates (
+CREATE TABLE :DB_SCHEMA_NAME.date (
   d_datekey int,
   d_date text,
   d_dayofweek text,

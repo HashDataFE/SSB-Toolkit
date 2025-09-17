@@ -1,4 +1,4 @@
-CREATE EXTERNAL TABLE ext_ssb.dates (
+CREATE EXTERNAL TABLE ext_ssb.date (
   d_datekey int,
   d_date text,
   d_dayofweek text,

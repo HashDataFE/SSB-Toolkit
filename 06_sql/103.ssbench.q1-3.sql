@@ -5,7 +5,7 @@ set search_path=:DB_SCHEMA_NAME,public;
 
 SELECT
     SUM(lo_extendedprice * lo_discount) AS REVENUE
-FROM lineorder, dates
+FROM lineorder, date
 WHERE
     lo_orderdate = to_date(d_datekey::text, 'YYYYMMDD')
   AND d_weeknuminyear = 6

@@ -8,7 +8,7 @@ SELECT
     s_city,
     d_year,
     SUM(lo_revenue) AS REVENUE
-FROM customer, lineorder, supplier, dates
+FROM customer, lineorder, supplier, date
 WHERE
     lo_custkey = c_custkey
   AND lo_suppkey = s_suppkey

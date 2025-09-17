@@ -4,7 +4,7 @@ set search_path=:DB_SCHEMA_NAME,public;
 
 
 SELECT SUM(lo_revenue), d_year, p_brand
-FROM lineorder, dates, part, supplier
+FROM lineorder, date, part, supplier
 WHERE
     lo_orderdate = to_date(d_datekey::text, 'YYYYMMDD')
   AND lo_partkey = p_partkey

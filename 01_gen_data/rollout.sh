@@ -102,7 +102,8 @@ if [ "${GEN_NEW_DATA}" == "true" ]; then
     done
     wait
     CHILD=1
-    while [ ${CHILD} -le ${PARALLEL} ]; do  
+    while [ ${CHILD} -le ${PARALLEL} ]; do
+      cd ${GEN_DATA_PATH}/${CHILD}/  
       if [ "$CHILD" -eq "1" ]; then
         log_time "${GEN_DATA_PATH}/${CHILD}/dbgen -f -s ${GEN_DATA_SCALE} -T d >> ${GEN_DATA_PATH}/logs/ssb.generate_data.${CHILD}.log 2>&1 &"
         ${GEN_DATA_PATH}/${CHILD}/dbgen -f -s ${GEN_DATA_SCALE} -T d >> ${GEN_DATA_PATH}/logs/ssb.generate_data.${CHILD}.log 2>&1 & 

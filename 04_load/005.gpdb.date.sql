@@ -1,4 +1,4 @@
-INSERT INTO :DB_SCHEMA_NAME.dates 
+INSERT INTO :DB_SCHEMA_NAME.date
 (
   d_datekey,
   d_date,
@@ -36,4 +36,4 @@ SELECT
   d_lastdayinmonthfl,
   d_holidayfl,
   d_weekdayfl
-FROM :ext_schema_name.dates;
+FROM :ext_schema_name.date;
