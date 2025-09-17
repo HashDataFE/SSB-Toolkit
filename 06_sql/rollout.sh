@@ -32,7 +32,7 @@ if [ "${ON_ERROR_STOP}" == 0 ]; then
   set +e
 fi
 
-for i in $(find "${PWD}" -maxdepth 1 -type f -name "*.${BENCH_ROLE}.*.sql" -printf "%f\n" | sort -n); do
+for i in $(find "${PWD}" -maxdepth 1 -type f -name "1*.${BENCH_ROLE}.*.sql" -printf "%f\n" | sort -n); do
 	for x in $(seq 1 ${SINGLE_USER_ITERATIONS}); do
 		id=$(echo ${i} | awk -F '.' '{print $1}')
 		# export id
@@ -42,7 +42,7 @@ for i in $(find "${PWD}" -maxdepth 1 -type f -name "*.${BENCH_ROLE}.*.sql" -prin
 		# export table_name
 		
 		start_log
-		if [ "${EXPLAIN_ANALYZE}" == "false" -o "${table_name}" == "15" ]; then
+		if [ "${EXPLAIN_ANALYZE}" == "false" ]; then
 		  log_time "psql ${PSQL_OPTIONS} -v ON_ERROR_STOP=1 -A -q -t -P pager=off -v DB_SCHEMA_NAME=\"${DB_SCHEMA_NAME}\" -v EXPLAIN_ANALYZE=\"\" -f ${PWD}/${i} | wc -l"
 		  tuples=$(psql ${PSQL_OPTIONS} -v ON_ERROR_STOP=1 -A -q -t -P pager=off -v DB_SCHEMA_NAME="${DB_SCHEMA_NAME}" -v EXPLAIN_ANALYZE="" -f ${PWD}/${i} | wc -l; exit ${PIPESTATUS[0]})
           if [ $? != 0 ]; then
@@ -63,6 +63,41 @@ for i in $(find "${PWD}" -maxdepth 1 -type f -name "*.${BENCH_ROLE}.*.sql" -prin
         sleep ${QUERY_INTERVAL}
 	done
 done
+
+
+if [ "${RUN_FLAT_SQL}" == "true" ]; then
+	for i in $(find "${PWD}" -maxdepth 1 -type f -name "2*.${BENCH_ROLE}.*.sql" -printf "%f\n" | sort -n); do
+		for x in $(seq 1 ${SINGLE_USER_ITERATIONS}); do
+			id=$(echo ${i} | awk -F '.' '{print $1}')
+			# export id
+			schema_name=$(echo ${i} | awk -F '.' '{print $2}')
+			# export schema_name
+			table_name=$(echo ${i} | awk -F '.' '{print $3}')
+			# export table_name
+
+			start_log
+			if [ "${EXPLAIN_ANALYZE}" == "false" ]; then
+			  log_time "psql ${PSQL_OPTIONS} -v ON_ERROR_STOP=1 -A -q -t -P pager=off -v DB_SCHEMA_NAME=\"${DB_SCHEMA_NAME}\" -v EXPLAIN_ANALYZE=\"\" -f ${PWD}/${i} | wc -l"
+			  tuples=$(psql ${PSQL_OPTIONS} -v ON_ERROR_STOP=1 -A -q -t -P pager=off -v DB_SCHEMA_NAME="${DB_SCHEMA_NAME}" -v EXPLAIN_ANALYZE="" -f ${PWD}/${i} | wc -l; exit ${PIPESTATUS[0]})
+	          if [ $? != 0 ]; then
+	            tuples="-1"
+	          fi
+			else
+			  myfilename=$(basename ${i})
+			  mylogfile=${SSB_DIR}/log/${myfilename}.single.explain_analyze.log
+			  log_time "psql ${PSQL_OPTIONS} -v ON_ERROR_STOP=1 -A -e -q -t -P pager=off -v DB_SCHEMA_NAME=\"${DB_SCHEMA_NAME}\" -v EXPLAIN_ANALYZE=\"EXPLAIN ANALYZE\" -f ${PWD}/${i} > ${mylogfile}"
+			  psql ${PSQL_OPTIONS} -v ON_ERROR_STOP=1 -A -e -q -t -P pager=off -v DB_SCHEMA_NAME="${DB_SCHEMA_NAME}" -v EXPLAIN_ANALYZE="EXPLAIN ANALYZE" -f ${PWD}/${i} > ${mylogfile}
+			  if [ $? != 0 ]; then
+			    tuples="-1"
+			  else
+	            tuples="0"
+	          fi
+			fi
+			print_log ${tuples}
+	        sleep ${QUERY_INTERVAL}
+		done
+	done
+fi
 
 log_time "Step ${step} finished"
 printf "\n"

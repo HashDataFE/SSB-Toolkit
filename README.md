@@ -192,15 +192,17 @@ export GEN_NEW_DATA="true"      # Generate new data (when RUN_GEN_DATA=true)
 export RUN_DDL="true"           # Create database schemas/tables
 export DROP_EXISTING_TABLES="true"  # Drop existing tables (when RUN_DDL=true)
 export RUN_LOAD="true"          # Load generated data
+export RUN_LOAD_FLAT_TABLE="true"   # Load data for flat table
 export RUN_ANALYZE="true"       # Analyze tables after loading
 
 # Query execution
-export RUN_SQL="true"                 # Run power test queries
-export RUN_QGEN="true"                # Generate query streams
+export RUN_SQL="true"                 # Run standard SSB test queries
+export RUN_FLAT_SQL="true"            # Run SSB Flat test queries
 export RUN_SINGLE_USER_REPORTS="true" # Generate single-user reports
 
 export RUN_MULTI_USER="false"         # Run throughput test queries
 export RUN_MULTI_USER_QGEN="true"     # Generate multi-user queries
+export RUN_MULTI_USER_FLAT_SQL="false"  # Run SSB Flat throughput test queries
 export RUN_MULTI_USER_REPORTS="false" # Generate multi-user reports
 export RUN_SCORE="false"              # Compute final benchmark score
 ```

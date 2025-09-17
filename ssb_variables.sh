@@ -58,7 +58,7 @@ export DROP_EXISTING_TABLES="true"
 
 ## step 04_load
 export RUN_LOAD="true"
-export LOAD_FLAT_TABLE="true"
+export RUN_LOAD_FLAT_TABLE="true"
 ### How many parallel processes to load data, default is 2, max is 24.
 export LOAD_PARALLEL="2"
 ### Truncate existing tables before loading data
@@ -71,6 +71,7 @@ export RUN_ANALYZE_PARALLEL="5"
 
 ## step 06_sql
 export RUN_SQL="true"
+export RUN_FLAT_SQL="true"
 ## Set wait time between each query execution, Set to 1 if you want to stop when an error occurs
 export QUERY_INTERVAL="0"
 export ON_ERROR_STOP="0"
@@ -81,6 +82,7 @@ export RUN_SINGLE_USER_REPORTS="true"
 ## step 08_multi_user
 export RUN_MULTI_USER="false"
 export RUN_MULTI_USER_QGEN="true"
+export RUN_MULTI_USER_FLAT_SQL="false"
 
 ## step 09_multi_user_reports
 export RUN_MULTI_USER_REPORTS="false"

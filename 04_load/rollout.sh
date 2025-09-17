@@ -92,13 +92,18 @@ done
 schema_name=${DB_SCHEMA_NAME}
 ext_schema_name="ext_${DB_SCHEMA_NAME}"
 
-for i in $(find "${PWD}" -maxdepth 1 -type f -name "*.${filter}.*.sql" -printf "%f\n" | sort -n); do
+for i in $(find "${PWD}" -maxdepth 1 -type f -name "00*.${filter}.*.sql" -printf "%f\n" | sort -n); do
 # Acquire a token to control concurrency
   read -u 5
   {
     start_log
     id=$(echo ${i} | awk -F '.' '{print $1}')
     table_name=$(echo ${i} | awk -F '.' '{print $3}')
+
+    if [ "${TRUNCATE_TABLES}" == "true" ]; then
+      log_time "Truncate table ${DB_SCHEMA_NAME}.${table_name}"
+      psql ${PSQL_OPTIONS} -v ON_ERROR_STOP=1 -c "TRUNCATE TABLE ${DB_SCHEMA_NAME}.${table_name}"
+    fi
     
     if [ "${RUN_MODEL}" == "cloud" ]; then
       GEN_DATA_PATH=${CLIENT_GEN_PATH}
@@ -130,10 +135,17 @@ wait
 # Close the file descriptor
 exec 5>&-
 
-if [ "${LOAD_FLAT_TABLE}" == "true" ]; then
+if [ "${RUN_LOAD_FLAT_TABLE}" == "true" ]; then
+  start_log
+  id="010"
+  table_name="lineorder_flat"
+  if [ "${TRUNCATE_TABLES}" == "true" ]; then
+    log_time "Truncate table ${DB_SCHEMA_NAME}.${table_name}"
+    psql ${PSQL_OPTIONS} -v ON_ERROR_STOP=1 -c "TRUNCATE TABLE ${DB_SCHEMA_NAME}.${table_name}"
+  fi
   log_time "Loading flat table"
-  log_time "psql ${PSQL_OPTIONS} -v ON_ERROR_STOP=1 -f ${PWD}/006.lineorder_flat.sql -v DB_SCHEMA_NAME=\"${DB_SCHEMA_NAME}\" | grep INSERT | awk -F ' ' '{print \$3}'"
-  tuples=$(psql ${PSQL_OPTIONS} -v ON_ERROR_STOP=1 -f ${PWD}/006.lineorder_flat.sql -v DB_SCHEMA_NAME="${DB_SCHEMA_NAME}" | grep INSERT | awk -F ' ' '{print $3}'; exit ${PIPESTATUS[0]}) &
+  log_time "psql ${PSQL_OPTIONS} -v ON_ERROR_STOP=1 -f ${PWD}/010.gpdb.lineorder_flat.sql -v DB_SCHEMA_NAME=\"${DB_SCHEMA_NAME}\" | grep INSERT | awk -F ' ' '{print \$3}'"
+  tuples=$(psql ${PSQL_OPTIONS} -v ON_ERROR_STOP=1 -f ${PWD}/010.gpdb.lineorder_flat.sql -v DB_SCHEMA_NAME="${DB_SCHEMA_NAME}" | grep INSERT | awk -F ' ' '{print $3}'; exit ${PIPESTATUS[0]})
   print_log ${tuples}
 fi
 

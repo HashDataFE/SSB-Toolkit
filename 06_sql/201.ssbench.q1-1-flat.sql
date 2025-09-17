@@ -1,0 +1,12 @@
+set role ssbench;
+set search_path=:DB_SCHEMA_NAME,public;
+:EXPLAIN_ANALYZE
+
+
+SELECT SUM(LO_EXTENDEDPRICE * LO_DISCOUNT) AS revenue
+FROM lineorder_flat
+WHERE
+    LO_ORDERDATE >= to_date('19930101', 'YYYYMMDD')
+    AND LO_ORDERDATE <= to_date('19931231', 'YYYYMMDD')
+    AND LO_DISCOUNT BETWEEN 1 AND 3
+    AND LO_QUANTITY < 25;
